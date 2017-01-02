@@ -15,10 +15,12 @@ public class MultiThreadRunner {
 	private volatile int i = 0;
 
 	// 线程安全：1' synchronized. 2' ThreadLocal 
+	// 单例变量，静态变量在被所有对象共享(可见)，属于线程非安全
+	// 局部变量只能在当前对象中可见，属于线程安全
 	public static void main(String[] args) {
 		MultiThreadRunner runner = new MultiThreadRunner();
-//		runner.threadCommon();
-//		runner.threadPool();
+		runner.threadCommon();
+		runner.threadPool();
 		runner.volatileVar();
 	}
 

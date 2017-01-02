@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -22,6 +23,7 @@ public class VectorRunner {
 		runner.hashSet();
 		runner.treeSet();
 		runner.treeMap();
+		runner.priorityQueue();
 	}
 
 	public void hashSet() {
@@ -72,6 +74,15 @@ public class VectorRunner {
 		while (it.hasNext()) {
 			System.out.println(it.next());
 		}
+		System.out.println("ASC");
+		while (!treeSet.isEmpty()) {
+			System.out.println(treeSet.pollFirst()); // 如果不打算清空当前Set，不要考虑使用pollFirst()/pollLast()方法
+		}
+//		System.out.println("DESC");
+//		while (!treeSet.isEmpty()) {
+//			System.out.println(treeSet.pollLast());
+//		}
+
 		// 2' 自定义排序
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		TreeSet<Integer> set = new TreeSet<Integer>(new Comparator() {
@@ -168,6 +179,20 @@ public class VectorRunner {
 		System.out.println("================= 3 ================");
 		for(Map.Entry<String,String> entry : sortMap.entrySet()){
 			System.out.println(entry.getKey() + ":" + entry.getValue());
+		}
+	}
+	
+	public void priorityQueue() { // 与TreeSet的区别：1. 不允许出现null. 2. 允许出现重复.
+		PriorityQueue<Integer> priorityQueue = new PriorityQueue<Integer>();
+		priorityQueue.add(10);
+		priorityQueue.add(20);
+		priorityQueue.add(10);
+		priorityQueue.add(30);
+		priorityQueue.add(5);
+
+		System.out.println("================= 4 ================");
+		while (!priorityQueue.isEmpty()) {
+			System.out.println(priorityQueue.poll()); // remove head element
 		}
 	}
 }
