@@ -2,30 +2,33 @@ package com.java.app.base;
 
 import java.util.PriorityQueue;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-// ¶àÏß³Ì½Ç¶È
-// Í¬²½: Ïß³ÌÍ¬²½.
-// Òì²½: ¶àÏß³Ì²¢·¢·ÃÎÊ.
+// ï¿½ï¿½ï¿½ß³Ì½Ç¶ï¿½
+// Í¬ï¿½ï¿½: ï¿½ß³ï¿½Í¬ï¿½ï¿½.
+// ï¿½ì²½: ï¿½ï¿½ï¿½ß³Ì²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 
-// Í¬²½×èÈû: Socket I/O
-// Í¬²½·Ç×èÈû: ¶à¸öI/OÇëÇó±»·ÅÖÃºóÌ¨£¬¶¨ÆÚÂÖÑ¯(¸ß²¢·¢³ÌÐòÉè¼Æ)
-// Òì²½×èÈû
-// Òì²½·Ç×èÈû: Socket NIO
+// Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: Socket I/O
+// Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½I/Oï¿½ï¿½ï¿½ó±»·ï¿½ï¿½Ãºï¿½Ì¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯(ï¿½ß²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+// ï¿½ì²½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ì²½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: Socket NIO
 
-// ×ÛÊö£º
-// Í¬²½/Òì²½ÊÇ±»µ÷ÓÃAPIµÄÍ¨Öª·½Ê½.
-// ×èÈû/·Ç×èÈûÊÇAPIµ÷ÓÃÕßµÄÍ¨Öª·½Ê½.
-// ²¢·¢£º(¿Í»§¶Ë)¶àÇëÇó
-// ²¢ÐÐ£º(·þÎñ¶Ë)¶à´¦Àí
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// Í¬ï¿½ï¿½/ï¿½ì²½ï¿½Ç±ï¿½ï¿½ï¿½ï¿½ï¿½APIï¿½ï¿½Í¨Öªï¿½ï¿½Ê½.
+// ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½APIï¿½ï¿½ï¿½ï¿½ï¿½ßµï¿½Í¨Öªï¿½ï¿½Ê½.
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½Í»ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ð£ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½à´¦ï¿½ï¿½
 public class BlockingRunner {
 
 	public static void main(String[] args) {
 		BlockingRunner runner = new BlockingRunner();
 		runner.blockingQueueWithSingleThread();
 		runner.unBlockingQueueWithSingleThread();
+		runner.blockingQueueWithMultiThreads();
 	}
 
-	// Í¬²½×èÈû
+	// Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	public void blockingQueueWithSingleThread() {
 		final int maxSize = 5;
 		ArrayBlockingQueue<String> blockingQueue = new ArrayBlockingQueue<String>(maxSize);
@@ -35,8 +38,8 @@ public class BlockingRunner {
 			blockingQueue.put("ccc");
 			blockingQueue.put("ddd");
 			blockingQueue.put("eee");
-//			blockingQueue.put("fff"); // ´ËÊ±¶ÓÁÐÒÑÂú£¬µ±Ç°²Ù×÷½«±»×èÈû. ³ÌÐòÖ´ÐÐÍ£ÔÚ´Ë´¦. ²»¹ýadd·½·¨²»»á×èÈû£¬µ«ÊÇ»áÅ×³öÒì³£
-										// Èç¹û¼È²»Ïë×èÈû£¬Ò²²»ÏëÅ×Òì³££¬ÐèÒªÊ¹ÓÃoffer·½·¨
+//			blockingQueue.put("fff"); // ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½Í£ï¿½Ú´Ë´ï¿½. ï¿½ï¿½ï¿½ï¿½addï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç»ï¿½ï¿½×³ï¿½ï¿½ì³£
+										// ï¿½ï¿½ï¿½È²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì³£ï¿½ï¿½ï¿½ï¿½ÒªÊ¹ï¿½ï¿½offerï¿½ï¿½ï¿½ï¿½
 		} catch (InterruptedException e) {
 
 		}
@@ -46,8 +49,8 @@ public class BlockingRunner {
 		System.out.println();
 	}
 	
-	// Í¬²½·Ç×èÈû
-	public void unBlockingQueueWithSingleThread() {
+	// Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	public void unBlockingQueueWithSingleThread() { // Java NIO
 		PriorityQueue<String> priorityQueue = new PriorityQueue<String>();
 		priorityQueue.add("aaa");
 		priorityQueue.add("bbb");
@@ -56,5 +59,50 @@ public class BlockingRunner {
 			System.out.println(priorityQueue.poll());
 		}
 		System.out.println();
+	}
+	
+	public void blockingQueueWithMultiThreads() {
+		final int maxSize = 5;
+		final ArrayBlockingQueue<String> blockingQueue = new ArrayBlockingQueue<String>(maxSize); // thread safe
+		try {
+			blockingQueue.put("Init");
+		} catch (InterruptedException e1) {
+
+		}
+
+		Runnable consumerRunnable = new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(5 * 1000); // 5s
+					blockingQueue.take();
+				} catch (InterruptedException e) {
+
+				}
+			}
+		};
+		ExecutorService consumerService = Executors.newCachedThreadPool();
+		consumerService.execute(consumerRunnable);
+		
+		Runnable producerRunnable = new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					blockingQueue.put("bbb");
+					blockingQueue.put("ccc");
+					blockingQueue.put("ddd");
+					blockingQueue.put("eee");
+					System.out.println("Waiting...");
+					blockingQueue.put("fff"); // blocking here
+					System.out.println("Successfully added!");
+				} catch (InterruptedException e) {
+					
+				}
+			}
+		};
+		ExecutorService producerService = Executors.newCachedThreadPool();
+		producerService.execute(producerRunnable);
 	}
 }

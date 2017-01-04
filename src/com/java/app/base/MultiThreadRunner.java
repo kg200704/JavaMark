@@ -1,6 +1,8 @@
 package com.java.app.base;
 
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,9 +21,11 @@ public class MultiThreadRunner {
 	// 局部变量只能在当前对象中可见，属于线程安全
 	public static void main(String[] args) {
 		MultiThreadRunner runner = new MultiThreadRunner();
-		runner.threadCommon();
-		runner.threadPool();
-		runner.volatileVar();
+//		runner.threadCommon();
+//		runner.threadPool();
+//		runner.volatileVar();
+//		runner.CyclicBarrier();
+		runner.countDownLatch();
 	}
 
 	public void threadCommon() {
@@ -131,5 +135,87 @@ public class MultiThreadRunner {
 
 			}
 		}		
+	}
+	
+	public void CyclicBarrier() {
+
+		final int THREAD_NUM = 5;
+		java.util.concurrent.CyclicBarrier barrier = new java.util.concurrent.CyclicBarrier(THREAD_NUM, new Runnable() {
+
+			@Override
+			public void run() {
+	
+			}
+		});
+		for (int i = 0; i < THREAD_NUM; i++) {
+			new Thread(new Worker(barrier)).start();
+		}
+	}
+
+	private class Worker implements Runnable {
+
+		private java.util.concurrent.CyclicBarrier barrier = null;
+
+		public Worker(java.util.concurrent.CyclicBarrier barrier) {
+			this.barrier = barrier;
+		}
+
+		@Override
+		public void run() {
+			try {
+				System.out.println("Worker's waiting");
+				barrier.await();
+				System.out.println(Thread.currentThread().getId() + " is working");
+			} catch (InterruptedException e) {
+
+			} catch (BrokenBarrierException e) {
+
+			}
+		}
+	}
+	
+	public void countDownLatch() {
+
+		final int THREAD_NUM = 5;
+		CountDownLatch latch = new CountDownLatch(THREAD_NUM);
+		ExecutorService executor = Executors.newFixedThreadPool(THREAD_NUM + 1);
+		executor.execute(new Supervisor(latch));
+		for (int i = 0; i < THREAD_NUM; i++) {
+			executor.execute(new Executor(latch));
+		}
+		executor.shutdown();
+	}
+
+	private class Executor implements Runnable {
+		private CountDownLatch latch = null;
+
+		public Executor(CountDownLatch latch) {
+			this.latch = latch;
+		}
+
+		@Override
+		public void run() {
+			System.out.println(Thread.currentThread().getId() + " is ready now");
+			latch.countDown();
+		}
+	}
+
+	private class Supervisor implements Runnable {
+		private CountDownLatch latch = null;
+
+		public Supervisor(CountDownLatch latch) {
+			this.latch = latch;
+		}
+
+		@Override
+		public void run() {
+			try {
+				System.out.println("Supervisor is waiting for executors");
+				latch.await();
+				System.out.println("All executors are ready now");
+			} catch (InterruptedException e) {
+
+			}
+		}
 	}
 }

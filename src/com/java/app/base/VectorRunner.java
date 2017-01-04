@@ -24,10 +24,11 @@ public class VectorRunner {
 		runner.treeSet();
 		runner.treeMap();
 		runner.priorityQueue();
+		runner.linkedHashMap();
 	}
 
 	public void hashSet() {
-		// 1' HashSet排序 
+		// 1' HashSetæŽ’åº� 
 		Set<Integer> set = new HashSet<Integer>();
 		set.add(20);
 		set.add(35);
@@ -40,7 +41,7 @@ public class VectorRunner {
 			System.out.println(it.next());
 		}
 
-		// 2' 重新实现HashSet (非重 + 无序)
+		// 2' é‡�æ–°å®žçŽ°HashSet (é�žé‡� + æ— åº�)
 		List<String> list = new ArrayList<String>();
 		list.add("mine");
 		list.add("tank");
@@ -58,11 +59,11 @@ public class VectorRunner {
 	}
 
 	public void treeSet() {
-		// Set与List区别:
-		// 	1) List: 按放入顺序遍历. Set: 无序遍历
-		// 	2) List: 允许重复. Set: 自动去重 
+		// Setä¸ŽListåŒºåˆ«:
+		// 	1) List: æŒ‰æ”¾å…¥é¡ºåº�é��åŽ†. Set: æ— åº�é��åŽ†
+		// 	2) List: å…�è®¸é‡�å¤�. Set: è‡ªåŠ¨åŽ»é‡� 
 		
-		// 1' 自然排序 (有序二叉树)
+		// 1' è‡ªç„¶æŽ’åº� (æœ‰åº�äºŒå�‰æ ‘)
 		TreeSet<String> treeSet = new TreeSet<String>();
 		treeSet.add("kaka");
 		treeSet.add("kaka");
@@ -76,14 +77,14 @@ public class VectorRunner {
 		}
 		System.out.println("ASC");
 		while (!treeSet.isEmpty()) {
-			System.out.println(treeSet.pollFirst()); // 如果不打算清空当前Set，不要考虑使用pollFirst()/pollLast()方法
+			System.out.println(treeSet.pollFirst()); // å¦‚æžœä¸�æ‰“ç®—æ¸…ç©ºå½“å‰�Setï¼Œä¸�è¦�è€ƒè™‘ä½¿ç”¨pollFirst()/pollLast()æ–¹æ³•
 		}
 //		System.out.println("DESC");
 //		while (!treeSet.isEmpty()) {
 //			System.out.println(treeSet.pollLast());
 //		}
 
-		// 2' 自定义排序
+		// 2' è‡ªå®šä¹‰æŽ’åº�
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		TreeSet<Integer> set = new TreeSet<Integer>(new Comparator() {
 
@@ -110,7 +111,7 @@ public class VectorRunner {
 	}
 
 	public void treeMap() {
-		// 1' 按key自然排序
+		// 1' æŒ‰keyè‡ªç„¶æŽ’åº�
 		TreeMap<String, String> treeMap = new TreeMap<String, String>();
 		treeMap.put("China", "Li Li");
 		treeMap.put("Japan", "Akatawa");
@@ -121,8 +122,7 @@ public class VectorRunner {
 		for(Map.Entry<String,String> entry : treeMap.entrySet()){
 			System.out.println(entry.getKey() + ":" + entry.getValue());
 		}
-		// 2' 自定义排序
-		@SuppressWarnings("unchecked")
+		// 2' è‡ªå®šä¹‰æŽ’åº�
 		TreeMap<String, String> map = new TreeMap<String, String>(new Comparator<String>() {
 
 			@Override
@@ -144,7 +144,7 @@ public class VectorRunner {
 		for(Map.Entry<String,String> entry : map.entrySet()){
 			System.out.println(entry.getKey() + ":" + entry.getValue());
 		}
-		// 3' 按值排序 TODO:
+		// 3' æŒ‰å€¼æŽ’åº� TODO:
 		TreeMap<String, String> entryMap = new TreeMap<String, String>();
 		entryMap.put("China", "Li");
 		entryMap.put("Japan", "Akatawa");
@@ -153,7 +153,7 @@ public class VectorRunner {
 		entryMap.put("Austrilia", "Clark");
 
 		List<Map.Entry<String, String>> entryList = new LinkedList<Map.Entry<String, String>>(entryMap.entrySet());
-		Collections.sort(entryList, new Comparator<Map.Entry<String, String>>() { // 对list排序
+		Collections.sort(entryList, new Comparator<Map.Entry<String, String>>() { // å¯¹listæŽ’åº�
 
 			@Override
 			public int compare(Entry<String, String> o1, Entry<String, String> o2) {
@@ -170,8 +170,8 @@ public class VectorRunner {
 
 		Map<String,String> sortMap = new LinkedHashMap<String,String>();
 
-		Iterator<Map.Entry<String, String>> iter = entryList.iterator(); // 此时list内元素已经排好序了
-		Map.Entry<String, String> tmpEntry = null; // 所以需要保持该顺序
+		Iterator<Map.Entry<String, String>> iter = entryList.iterator(); // æ­¤æ—¶listå†…å…ƒç´ å·²ç»�æŽ’å¥½åº�äº†
+		Map.Entry<String, String> tmpEntry = null; // æ‰€ä»¥éœ€è¦�ä¿�æŒ�è¯¥é¡ºåº�
 		while (iter.hasNext()) {
 			tmpEntry = iter.next();
 			sortMap.put(tmpEntry.getKey(), tmpEntry.getValue());
@@ -182,7 +182,7 @@ public class VectorRunner {
 		}
 	}
 	
-	public void priorityQueue() { // 与TreeSet的区别：1. 不允许出现null. 2. 允许出现重复.
+	public void priorityQueue() { // ä¸ŽTreeSetçš„åŒºåˆ«ï¼š1. ä¸�å…�è®¸å‡ºçŽ°null. 2. å…�è®¸å‡ºçŽ°é‡�å¤�.
 		PriorityQueue<Integer> priorityQueue = new PriorityQueue<Integer>();
 		priorityQueue.add(10);
 		priorityQueue.add(20);
@@ -193,6 +193,46 @@ public class VectorRunner {
 		System.out.println("================= 4 ================");
 		while (!priorityQueue.isEmpty()) {
 			System.out.println(priorityQueue.poll()); // remove head element
+		}
+	}
+
+	public void linkedHashMap() { // LinkedHashMap with LRU 
+		LRULinkedHashMap<String,String> lruMap = new LRULinkedHashMap<String,String>(16, 0.75f, true);
+		lruMap.put("a", "b");
+	}
+
+	private class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		private static final int LRU_MAX_CAPACITY = 1024;
+
+		private int capacity = 0;
+		
+		public LRULinkedHashMap() {
+			super();
+		}
+
+		public LRULinkedHashMap(int initialCapacity, float loadFactor, boolean isLRU) {
+			super(initialCapacity, loadFactor, true);
+			capacity = LRU_MAX_CAPACITY;
+		}
+
+		public LRULinkedHashMap(int initialCapacity, float loadFactor, boolean isLRU, int lruCapacity) {  
+			super(initialCapacity, loadFactor, true);  
+			this.capacity = lruCapacity;  
+		} 
+
+		@Override  
+		protected boolean removeEldestEntry(Entry<K, V> eldest) {
+			System.out.println(eldest.getKey() + ":" + eldest.getValue());
+			if(size() > capacity) {
+				return true;
+			}
+			return false;
 		}
 	}
 }
