@@ -28,7 +28,7 @@ public class BlockingRunner {
 		runner.blockingQueueWithMultiThreads();
 	}
 
-	// ͬ������
+	// 同步阻塞
 	public void blockingQueueWithSingleThread() {
 		final int maxSize = 5;
 		ArrayBlockingQueue<String> blockingQueue = new ArrayBlockingQueue<String>(maxSize);
@@ -49,7 +49,7 @@ public class BlockingRunner {
 		System.out.println();
 	}
 	
-	// ͬ��������
+	// 同步非阻塞
 	public void unBlockingQueueWithSingleThread() { // Java NIO
 		PriorityQueue<String> priorityQueue = new PriorityQueue<String>();
 		priorityQueue.add("aaa");
