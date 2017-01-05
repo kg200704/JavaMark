@@ -26,13 +26,13 @@ public class StaticRunner {
 	private class NonStaticInner {
 		
 		public void call() {
-			// ·ÇÄÚ²¿¾²Ì¬ÀàÄÜ¹»·ÃÎÊÍâ²¿Àà¾²Ì¬ºÍ·Ç¾²Ì¬³ÉÔ±
+			// éå†…éƒ¨é™æ€ç±»èƒ½å¤Ÿè®¿é—®å¤–éƒ¨ç±»é™æ€å’Œéé™æ€æˆå‘˜
 			System.out.println("Non static inner class " + i);
 			System.out.println("Non static inner class " + s);
 		}
 	}
 
-	// ²»ĞèÒªÖ¸ÏòÍâ²¿ÀàµÄÒıÓÃ
+	// ä¸éœ€è¦æŒ‡å‘å¤–éƒ¨ç±»çš„å¼•ç”¨
 	public void staticInner() {
 		StaticRunner.StaticInner inner = new StaticRunner.StaticInner();
 		inner.call();
@@ -41,7 +41,7 @@ public class StaticRunner {
 	private static class StaticInner {
 
 		public void call() {
-			// ¾²Ì¬ÄÚ²¿ÀàÖ»ÄÜ·ÃÎÊÍâ²¿¾²Ì¬Àà³ÉÔ±£¬²»ÄÜ·ÃÎÊÍâ²¿Àà·Ç¾²Ì¬³ÉÔ±
+			// é™æ€å†…éƒ¨ç±»åªèƒ½è®¿é—®å¤–éƒ¨é™æ€ç±»æˆå‘˜ï¼Œä¸èƒ½è®¿é—®å¤–éƒ¨ç±»éé™æ€æˆå‘˜
 //			System.out.println("Static inner class" + i);
 			System.out.println("Static inner class " + s);
 		}

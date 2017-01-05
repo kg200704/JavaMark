@@ -5,20 +5,20 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-// ���߳̽Ƕ�
-// ͬ��: �߳�ͬ��.
-// �첽: ���̲߳�������.
+//多线程角度
+//同步: 线程同步.
+//异步: 多线程并发访问.
 
-// ͬ������: Socket I/O
-// ͬ��������: ���I/O���󱻷��ú�̨��������ѯ(�߲����������)
-// �첽����
-// �첽������: Socket NIO
+//同步阻塞: Socket I/O
+//同步非阻塞: 多个I/O请求被放置后台，定期轮询(高并发程序设计)
+//异步阻塞
+//异步非阻塞: Socket NIO
 
-// ������
-// ͬ��/�첽�Ǳ�����API��֪ͨ��ʽ.
-// ����/��������API�����ߵ�֪ͨ��ʽ.
-// ������(�ͻ���)������
-// ���У�(�����)�ദ��
+//综述：
+//同步/异步是被调用API的通知方式.
+//阻塞/非阻塞是API调用者的通知方式.
+//并发：(客户端)多请求
+//并行：(服务端)多处理
 public class BlockingRunner {
 
 	public static void main(String[] args) {
@@ -38,8 +38,8 @@ public class BlockingRunner {
 			blockingQueue.put("ccc");
 			blockingQueue.put("ddd");
 			blockingQueue.put("eee");
-//			blockingQueue.put("fff"); // ��ʱ��������ǰ������������. ����ִ��ͣ�ڴ˴�. ����add�������������ǻ��׳��쳣
-										// ���Ȳ�������Ҳ�������쳣����Ҫʹ��offer����
+//			blockingQueue.put("fff"); // 此时队列已满，当前操作将被阻塞. 程序执行停在此处. 不过add方法不会阻塞，但是会抛出异常
+			// 如果既不想阻塞，也不想抛异常，需要使用offer方法
 		} catch (InterruptedException e) {
 
 		}
