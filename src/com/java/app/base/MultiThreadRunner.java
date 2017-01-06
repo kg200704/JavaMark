@@ -1,12 +1,16 @@
 package com.java.app.base;
 
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -25,7 +29,9 @@ public class MultiThreadRunner {
 //		runner.threadPool();
 //		runner.volatileVar();
 //		runner.CyclicBarrier();
-		runner.countDownLatch();
+//		runner.countDownLatch();
+//		runner.deadLock();
+		runner.threadLocal();
 	}
 
 	public void threadCommon() {
@@ -115,10 +121,26 @@ public class MultiThreadRunner {
 		}
 	}
 
+	// 内存泄漏: 某块内存区域永远不会被访问到
+	// 总结: key和value的生命周期不一致, 导致key有可能被提前回收,但是value就没有机会回收了
 	public void threadLocal() {
-		
+		// ThreadLocal内部数据结构: ThreadLocal对象以弱引用的方式来做为ThreadLocalMap的key, 而需要可能在多线程间访问的对象做为value
+		HashMap<WeakReference<ThreadLocal<String>>,String>  
+							threadLocalMap = new HashMap<WeakReference<ThreadLocal<String>>, String>();
+		ThreadLocal<String> threadLocal = new ThreadLocal<String>();
+		// 弱引用持有, 一旦key = null, 该引用所指向的ThreadLocal<String>对象内存将被回收
+		WeakReference<ThreadLocal<String>> key = new WeakReference<ThreadLocal<String>>(threadLocal);
+		// 强引用持有, 除非其所在线程结束(线程池中的线程有可能不会结束,因为会被重用)导致强引用断开, 否则它一直不会被回收
+		String value = new String("this is a shared value with multi-threads");
+		threadLocalMap.put(key, value); 
+
+		ThreadLocal<String> local = new ThreadLocal<String>();
+		local.set(new String("This is a thread local object")); // String对象有可能被多个线程访问,所以将其交由ThreadLocal来维护
+		System.out.println(local.get());
+		// 用完尽量调用remove, 否则有可能引发内存泄露
+		local.remove(); // 该方法将删除整个Entry
 	}
-	
+
 	public void volatileVar() {
 		System.out.println(i); // volatile确保线程每次都是从读取内存中的值，而不是工作线程中的副本
 								// 但是其不会确保操作原子性，必须要使用synchronized
@@ -216,6 +238,46 @@ public class MultiThreadRunner {
 			} catch (InterruptedException e) {
 
 			}
+		}
+	}
+
+	// TODO:
+	public void deadLock() {
+		final int corePoolSize = 2;
+		final int maximumPoolSize = 100;
+		final long keepAliveTime = 2;
+		final ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, 
+				TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>(),
+	            new ThreadFactory() {
+
+					@Override
+					public Thread newThread(Runnable r) {
+						return new Thread(r);
+					}
+		});
+		Future<Long> previous = executor.submit(new Callable<Long>() { // Callable::call()相比于Runable::run()的优势在于
+											// 前者可以在线程执行完毕以后返回值, 而且也能抛出异常
+			@Override
+			public Long call() throws Exception {
+				Thread.sleep(10 * 1000);
+				Future<Long> current = executor.submit(new Callable<Long>() {
+
+					@Override
+					public Long call() throws Exception {
+						return -1L;
+					}
+				});
+				System.out.println("current: " + current.get());
+				return -1L;
+			}
+
+		});
+		try {
+			System.out.println("previous: " + previous.get());
+		} catch (InterruptedException e) {
+
+		} catch (ExecutionException e) {
+
 		}
 	}
 }

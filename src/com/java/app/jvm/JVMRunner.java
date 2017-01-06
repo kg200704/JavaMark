@@ -10,6 +10,10 @@ public class JVMRunner {
 	private HashMap<Integer, SoftReference<ImageCache>> softMap = new HashMap<Integer, SoftReference<ImageCache>>();
 	private WeakHashMap<Integer, String> weakMap = new WeakHashMap<Integer, String>();
 	private HashMap<Integer, String> strongMap = new HashMap<Integer, String>();
+	// volatile
+	private volatile int v = 20;
+	// final
+	private final int f = 10;
 
 	public static void main(String[] args) {
 		JVMRunner runner = new JVMRunner();
@@ -114,5 +118,32 @@ public class JVMRunner {
 //		--缺点：应用响应时间可能较长
 //		并发处理器： 
 //		--适用情况：“对响应时间有高要求”，多CPU、对应用响应时间有较高要求的中、大型应用。举例：Web服务器/应用服务器、电信交换、集成开发环境。
+
+//		static静态变量存放在年老代, 不参与gc回收
+	}
+
+	public void memory(int param) { // 每个线程都有一个本地内存, 用于存储主内存中共享变量的副本, 
+								// 如果不运用线程同步, 就会导致每个线程都只操作各自线程中的副本
+		System.out.println(param); // 函数参数
+		try {
+			int localVar = 20; // 局部变量
+			System.out.println(localVar);	
+		} catch (Exception e) {
+			System.out.println(e); // 异常处理参数
+		}
+		// 以上均不会在线程之间共享
+
+		// volatile: 每次被其它线程访问时, 都强迫从主内存中获取, 所以它对于其它所有线程可见
+		// 但是其不保证原子性, 因为这期间其它线程会在未++之前访问还未来得及修改的值
+		v++; // Step 1: 从主内存中获取. Step 2: ++. Step 3: 将++以后的值写回主内存
+		System.out.println(v); 
+
+		// final
+//		f++;
+		System.out.println(f); // 与static成员一样,被各个线程间共享
+	}
+
+	public void classLoader() {
+		
 	}
 }

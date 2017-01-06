@@ -86,8 +86,9 @@ public class VectorRunner {
 
 		// 2' 自定义排序
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		TreeSet<Integer> set = new TreeSet<Integer>(new Comparator() {
-
+		TreeSet<Integer> set = new TreeSet<Integer>(new Comparator() { // 重写Comparator接口中的compare方法来实现定制排序
+							// 相比重写Comparable接口的compareTo方法的好处是不需要重写equals, hashcode方法来避免重复
+							// Comparable: 使需要排序的实体类实现该接口的compareTo方法
 			@Override
 			public int compare(Object o1, Object o2) {
 				Integer s1 = (Integer)o1;
