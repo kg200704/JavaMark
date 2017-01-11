@@ -20,7 +20,7 @@ public class MultiThreadRunner {
 	
 	private volatile int i = 0;
 
-	// 线程安全：1' synchronized. 2' ThreadLocal 
+	// 线程安全：1' synchronized (锁 + 线程内存修改完之后写回主内存). 2' ThreadLocal (线程副本). 3' volatile (直接修改主内存). 
 	// 单例变量，静态变量在被所有对象共享(可见)，属于线程非安全
 	// 局部变量只能在当前对象中可见，属于线程安全
 	public static void main(String[] args) {
@@ -123,7 +123,7 @@ public class MultiThreadRunner {
 
 	// 内存泄漏: 某块内存区域永远不会被访问到
 	// 总结: key和value的生命周期不一致, 导致key有可能被提前回收,但是value就没有机会回收了
-	public void threadLocal() {
+	public void threadLocal() { // ThreadLocal使用副本隔离了数据在各线程间的共享，而synchronized正相反
 		// ThreadLocal内部数据结构: ThreadLocal对象以弱引用的方式来做为ThreadLocalMap的key, 而需要可能在多线程间访问的对象做为value
 		HashMap<WeakReference<ThreadLocal<String>>,String>
 							threadLocalMap = new HashMap<WeakReference<ThreadLocal<String>>, String>();
@@ -142,8 +142,8 @@ public class MultiThreadRunner {
 	}
 
 	public void volatileVar() {
-		System.out.println(i); // volatile确保线程每次都是从读取内存中的值，而不是工作线程中的副本
-								// 但是其不会确保操作原子性，必须要使用synchronized
+		System.out.println(i); // volatile确保线程每次都是读取主内存中的值，而不是工作线程中的副本
+							// 但是其不会确保操作原子性，必须要使用synchronized
 	}
 	
 	private class MyRunnable implements Runnable {
