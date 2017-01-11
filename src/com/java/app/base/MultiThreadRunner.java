@@ -47,7 +47,7 @@ public class MultiThreadRunner {
 				}
 				synchronized(res) {
 					System.out.println("Released...");
-					res.notifyAll(); // 不能用notify，否则预知notify哪个线程
+					res.notifyAll(); // 不能用notify，否则无法预知notify哪个线程
 				}
 			}
 		};
@@ -95,7 +95,7 @@ public class MultiThreadRunner {
 			public Thread newThread(Runnable runnable) {
 //				System.out.println(runnable.toString() + " is running");
 				Thread t = new Thread(runnable);
-				t.setDaemon(true); // 守護綫程：不影響JVM的開啓與關閉
+				t.setDaemon(true); // 守护线程： 不影响JVM的开启与关闭
 				t.setPriority(Thread.NORM_PRIORITY);
 				return t;
 			}
@@ -125,14 +125,14 @@ public class MultiThreadRunner {
 	// 总结: key和value的生命周期不一致, 导致key有可能被提前回收,但是value就没有机会回收了
 	public void threadLocal() {
 		// ThreadLocal内部数据结构: ThreadLocal对象以弱引用的方式来做为ThreadLocalMap的key, 而需要可能在多线程间访问的对象做为value
-		HashMap<WeakReference<ThreadLocal<String>>,String>  
+		HashMap<WeakReference<ThreadLocal<String>>,String>
 							threadLocalMap = new HashMap<WeakReference<ThreadLocal<String>>, String>();
 		ThreadLocal<String> threadLocal = new ThreadLocal<String>();
 		// 弱引用持有, 一旦key = null, 该引用所指向的ThreadLocal<String>对象内存将被回收
 		WeakReference<ThreadLocal<String>> key = new WeakReference<ThreadLocal<String>>(threadLocal);
 		// 强引用持有, 除非其所在线程结束(线程池中的线程有可能不会结束,因为会被重用)导致强引用断开, 否则它一直不会被回收
 		String value = new String("this is a shared value with multi-threads");
-		threadLocalMap.put(key, value); 
+		threadLocalMap.put(key, value);
 
 		ThreadLocal<String> local = new ThreadLocal<String>();
 		local.set(new String("This is a thread local object")); // String对象有可能被多个线程访问,所以将其交由ThreadLocal来维护

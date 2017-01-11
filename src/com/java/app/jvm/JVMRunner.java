@@ -39,17 +39,17 @@ public class JVMRunner {
 		// 强引用key一旦被置为null, 则当gc时, 当前weakHashMap中整个entry将被删除
 		Integer strongKey = new Integer(101);
 		weakMap.put(strongKey, "weak reference");
-		System.out.println("Gc is not running " + weakMap.get(101));
+		System.out.println("Gc is not running " + weakMap.get(101)); 
 		strongKey = null;
 		System.gc();
-		System.out.println("Gc is running " + weakMap.get(101));
+		System.out.println("Gc is running " + weakMap.get(101)); // 指向101那块内存已经回收
 
 		strongKey = new Integer(101);
 		strongMap.put(strongKey, "strong reference");
 		System.out.println("Gc is not running " + strongMap.get(101));
 		strongKey = null;
 		System.gc();
-		System.out.println("Gc is running " + strongMap.get(101));
+		System.out.println("Gc is running " + strongMap.get(101)); // 指向101那块内存依然还在
 	}
 
 	private void put(ImageCache imageCache) {
@@ -123,7 +123,7 @@ public class JVMRunner {
 	}
 
 	public void memory(int param) { // 每个线程都有一个本地内存, 用于存储主内存中共享变量的副本, 
-								// 如果不运用线程同步, 就会导致每个线程都只操作各自线程中的副本
+								// 如果不运用线程同步, 就会导致每个线程都只操作各自线程中的副本，而后将本地副本刷回主内存，导致主内存数据不一致
 		System.out.println(param); // 函数参数
 		try {
 			int localVar = 20; // 局部变量

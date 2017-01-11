@@ -20,12 +20,23 @@ public class VectorRunner {
 
 	public static void main(String[] args) {
 		VectorRunner runner = new VectorRunner();
+		runner.hashMap();
 		runner.hashSet();
 		runner.treeSet();
 		runner.treeMap();
 		runner.priorityQueue();
 		runner.linkedHashMap();
 	}
+
+	// 1' 散列方法解决(存储)冲突
+	// 2' 链表解决(对象)碰撞
+	public void hashMap() {
+		// hashcode和equals方法在HashMap中的用途
+		// 冲突： 通过put()/get()方法存取(键/值)对象时，hashcode将确定(键/值)对象在数组中存储的位置
+		// 碰撞： 即便是两个对象hashcode相同，因为对象是存储在链表中，链表会依据插入顺序存储
+		// 如果在链表中存在两个相同的key(equals方法)，则使用新value替换旧value
+
+	} // 不保持数据存储顺序，因为使用的是随机散列的存储机制
 
 	public void hashSet() {
 		// 1' HashSet排序 
@@ -93,10 +104,10 @@ public class VectorRunner {
 			public int compare(Object o1, Object o2) {
 				Integer s1 = (Integer)o1;
 				Integer s2 = (Integer)o2;
-				if (s1 > s2) {
-					return -1;
-				} else if (s1 < s2) {
-					return 1;
+				if (s1 > s2) { // 逆序
+					return -1; // 顺序： s1 < s2
+				} else if (s1 < s2) { // 逆序
+					return 1; // 顺序： s1 > s2
 				}
 				return 0;
 			}
@@ -123,7 +134,7 @@ public class VectorRunner {
 		for(Map.Entry<String,String> entry : treeMap.entrySet()){
 			System.out.println(entry.getKey() + ":" + entry.getValue());
 		}
-		// 2' 自定义排序
+		// 2' 自定义按key排序
 		TreeMap<String, String> map = new TreeMap<String, String>(new Comparator<String>() {
 
 			@Override
@@ -145,7 +156,7 @@ public class VectorRunner {
 		for(Map.Entry<String,String> entry : map.entrySet()){
 			System.out.println(entry.getKey() + ":" + entry.getValue());
 		}
-		// 3' 按值排序
+		// 3' 按值排序 (逆序)
 		TreeMap<String, String> entryMap = new TreeMap<String, String>();
 		entryMap.put("China", "Li");
 		entryMap.put("Japan", "Akatawa");
@@ -162,7 +173,7 @@ public class VectorRunner {
 				String value2 = o2.getValue();
 				if (value1.compareTo(value2) > 0) {
 					return -1;
-				} else if (value1.compareTo(value2) < 0) { // valueN > value2 > value1
+				} else if (value1.compareTo(value2) < 0) {
 					return 1;
 				}
 				return 0;

@@ -12,7 +12,7 @@ public class StaticRunner {
 		// static inner class called
 		runner.staticInner();
 	}
-	
+
 	public void externalCall() {
 		
 	}
@@ -22,9 +22,9 @@ public class StaticRunner {
 		StaticRunner.NonStaticInner inner = outer.new NonStaticInner();
 		inner.call();
 	}
-	
+
 	private class NonStaticInner {
-		
+
 		public void call() {
 			// 非内部静态类能够访问外部类静态和非静态成员
 			System.out.println("Non static inner class " + i);
